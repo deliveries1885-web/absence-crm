@@ -621,8 +621,7 @@ function codeDD(id, val){
 }
 function subDD(id, code, val){
   const subs = code && CODE_MAP[code] ? CODE_MAP[code] : [];
-  const dis = subs.length===0 ? 'disabled' : '';
-  return `<select class="dd sub-dd" id="s_${id}" ${dis} style="min-width:155px">
+  return `<select class="dd sub-dd" id="s_${id}" style="min-width:155px" ${subs.length===0?'disabled':''}>
     <option value="">— Subcode —</option>
     ${subs.map(s=>`<option value="${s}"${s===val?' selected':''}>${s}</option>`).join('')}
   </select>`;
@@ -631,9 +630,11 @@ function onCodeChange(id){
   const code=document.getElementById('c_'+id).value;
   const subs=code&&CODE_MAP[code]?CODE_MAP[code]:[];
   const el=document.getElementById('s_'+id);
+  if(!el) return;
   el.innerHTML=`<option value="">— Subcode —</option>${subs.map(s=>`<option value="${s}">${s}</option>`).join('')}`;
   el.disabled=subs.length===0;
-  if(subs.length===1) el.value=subs[0];
+  el.style.opacity=subs.length===0?'0.4':'1';
+  if(subs.length===1){ el.value=subs[0]; }
 }
 
 // ── Save / Delete ─────────────────────────────────────────────
