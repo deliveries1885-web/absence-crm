@@ -573,7 +573,10 @@ function loadCSV(e){
     const h=lines[0].split(',').map(x=>x.trim().replace(/^"|"$/g,''));
     const ci={
       date:fc(h,['date']), projtype:fc(h,['projecttype','project']), type2:fc(h,['type2']),
-      poc:fc(h,['pocname','poc']), hrms:fc(h,['passporthrms','hrmsid','hrms','passport']),
+      poc:fc(h,['pocname','poc']),
+      ridername:fc(h,['ridername','rider']),
+      passport:fc(h,['passport']),
+      hrms:fc(h,['hrmsid','hrms']),
       mob:fc(h,['mob','mobile']), license:fc(h,['licenseno','license']),
       lms:fc(h,['newlms','lms']), special:fc(h,['specialday','special']),
       shift:fc(h,['shifttiming','shift']), planned:fc(h,['plannedhrs','planned']),
