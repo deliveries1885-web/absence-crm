@@ -359,7 +359,7 @@ function setLastSync(){
 
 // ── MSAL OneDrive ─────────────────────────────────────────────
 function initMsal(){
-  if(CRM_CONFIG.clientId==='SETUP_NEEDED'){
+  if(CRM_CONFIG.clientId==='PLACEHOLDER_ONLY'){
     document.getElementById('setupBanner').style.display='block';
     setSyncStatus('err','Not configured — saving locally');
     return;
