@@ -92,43 +92,31 @@ body{font-family:Segoe UI,system-ui,sans-serif;background:#f0f2f5;min-height:100
 .poc-notice{padding:7px 16px;background:#f0faf0;border-bottom:1px solid #c8e8c8;font-size:12px;color:#1a5c1a;font-weight:600}
 
 /* Table */
-.tbl-wrap-outer{position:relative}
+.tbl-wrap-outer{position:relative;border-bottom:3px solid #0078d4}
 .tbl-wrap{
-  overflow-x:scroll !important;
+  overflow-x:scroll;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:thick !important;
-  scrollbar-color:#0078d4 #cce0f5 !important;
+  scrollbar-width:thick;
+  scrollbar-color:#0078d4 #dde8f5;
 }
-.tbl-wrap::-webkit-scrollbar{
-  height:16px !important;
-  display:block !important;
-  background:#cce0f5;
-}
-.tbl-wrap::-webkit-scrollbar-track{
-  background:#cce0f5;
-  border-radius:0;
-}
-.tbl-wrap::-webkit-scrollbar-thumb{
-  background:#0078d4 !important;
-  border-radius:8px;
-  border:3px solid #cce0f5;
-  min-width:60px;
-}
-.tbl-wrap::-webkit-scrollbar-thumb:hover{background:#004f9e !important}
-table{border-collapse:collapse;font-size:12px;table-layout:fixed;min-width:2200px;width:2200px}
-th{text-align:left;font-size:10px;font-weight:700;color:#666;padding:6px 8px;
-  border-bottom:2px solid #0078d4;background:#f0f6ff;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;text-transform:uppercase;letter-spacing:.03em;
+.tbl-wrap::-webkit-scrollbar{height:18px;display:block;background:#dde8f5}
+.tbl-wrap::-webkit-scrollbar-track{background:#dde8f5}
+.tbl-wrap::-webkit-scrollbar-thumb{background:#0078d4;border-radius:9px;border:4px solid #dde8f5;min-width:80px}
+.tbl-wrap::-webkit-scrollbar-thumb:hover{background:#004f9e}
+table{border-collapse:collapse;font-size:12px;table-layout:fixed;width:2400px}
+th{text-align:left;font-size:10px;font-weight:700;color:#555;padding:7px 8px;
+  border-bottom:2px solid #0078d4;background:#f0f6ff;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;
   position:sticky;top:0;z-index:1}
 th.g{background:#f0faf0;color:#107c10}
-td{padding:5px 8px;border-bottom:1px solid #f5f5f5;vertical-align:middle;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td{padding:6px 8px;border-bottom:1px solid #f0f0f0;vertical-align:middle;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a}
+tr:last-child td{border-bottom:none}
 tr:hover td{background:#f5f9ff}
-th:nth-child(1),td:nth-child(1){position:sticky;left:0;z-index:2;background:#f0f6ff;border-right:1px solid #ddd;width:40px}
-th:nth-child(2),td:nth-child(2){position:sticky;left:40px;z-index:2;background:#f0f6ff;border-right:2px solid #0078d4}
-td:nth-child(1){background:#fff}
-td:nth-child(2){background:#fff}
-tr:hover td:nth-child(1),tr:hover td:nth-child(2){background:#f5f9ff}
+th:nth-child(1),td:nth-child(1){position:sticky;left:0;z-index:2;background:#f0f6ff;border-right:1px solid #ddd;width:36px;min-width:36px}
+th:nth-child(2),td:nth-child(2){position:sticky;left:36px;z-index:2;background:#f0f6ff;border-right:2px solid #0078d4;width:90px;min-width:90px}
+td:nth-child(1),td:nth-child(2){background:#fff}
+tr:hover td:nth-child(1),tr:hover td:nth-child(2){background:#eef5ff}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
 th{text-align:left;font-size:10px;font-weight:700;color:#666;padding:7px 9px;border-bottom:1px solid #eee;background:#fafafa;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
 th.g{background:#f0faf0;color:#107c10}
@@ -296,32 +284,32 @@ tr:hover td{background:#fafbff}
       <div class="tbl-wrap" id="tblWrap1">
         <table>
           <colgroup>
-            <col style="width:40px"><!-- # -->
-            <col style="width:90px"><!-- date -->
-            <col style="width:80px"><!-- project -->
-            <col style="width:110px"><!-- type2 -->
-            <col style="width:90px"><!-- poc -->
-            <col style="width:160px"><!-- rider name -->
-            <col style="width:90px"><!-- passport -->
-            <col style="width:80px"><!-- hrms -->
-            <col style="width:100px"><!-- mobile -->
-            <col style="width:70px"><!-- license -->
-            <col style="width:70px"><!-- lms -->
-            <col style="width:80px"><!-- special -->
-            <col style="width:90px"><!-- shift -->
-            <col style="width:65px"><!-- planned -->
-            <col style="width:65px"><!-- achieved -->
-            <col style="width:70px"><!-- shift count -->
-            <col style="width:65px"><!-- no show -->
-            <col style="width:60px"><!-- orders -->
-            <col style="width:65px"><!-- client -->
-            <col style="width:115px"><!-- code -->
-            <col style="width:170px"><!-- subcode -->
-            <col style="width:160px"><!-- remarks -->
-            <col style="width:90px"><!-- updated by -->
-            <col style="width:70px"><!-- status -->
-            <col style="width:50px"><!-- save -->
-            <col style="width:40px"><!-- del -->
+            <col style="width:36px">  <!-- # -->
+            <col style="width:90px">  <!-- date -->
+            <col style="width:80px">  <!-- project -->
+            <col style="width:130px"> <!-- type2 -->
+            <col style="width:90px">  <!-- poc -->
+            <col style="width:180px"> <!-- rider name -->
+            <col style="width:90px">  <!-- passport -->
+            <col style="width:80px">  <!-- hrms -->
+            <col style="width:105px"> <!-- mobile -->
+            <col style="width:70px">  <!-- license -->
+            <col style="width:65px">  <!-- lms -->
+            <col style="width:80px">  <!-- special -->
+            <col style="width:100px"> <!-- shift -->
+            <col style="width:65px">  <!-- planned -->
+            <col style="width:65px">  <!-- achieved -->
+            <col style="width:65px">  <!-- shifts -->
+            <col style="width:65px">  <!-- no show -->
+            <col style="width:65px">  <!-- orders -->
+            <col style="width:65px">  <!-- client -->
+            <col style="width:115px"> <!-- code -->
+            <col style="width:175px"> <!-- subcode -->
+            <col style="width:170px"> <!-- remarks -->
+            <col style="width:95px">  <!-- updated by -->
+            <col style="width:70px">  <!-- status -->
+            <col style="width:55px">  <!-- save -->
+            <col style="width:42px">  <!-- del -->
           </colgroup>
           <thead><tr>
             <th>#</th><th>Date</th><th>Project</th><th>Type 2</th><th>POC</th>
@@ -357,30 +345,30 @@ tr:hover td{background:#fafbff}
       <div class="tbl-wrap" id="tblWrap2">
         <table>
           <colgroup>
-            <col style="width:40px">
+            <col style="width:36px">
             <col style="width:90px">
             <col style="width:80px">
-            <col style="width:110px">
+            <col style="width:130px">
             <col style="width:90px">
-            <col style="width:160px">
+            <col style="width:180px">
             <col style="width:90px">
+            <col style="width:80px">
+            <col style="width:105px">
+            <col style="width:70px">
+            <col style="width:65px">
             <col style="width:80px">
             <col style="width:100px">
-            <col style="width:70px">
-            <col style="width:70px">
-            <col style="width:80px">
-            <col style="width:90px">
             <col style="width:65px">
             <col style="width:65px">
-            <col style="width:70px">
             <col style="width:65px">
-            <col style="width:60px">
+            <col style="width:65px">
+            <col style="width:65px">
             <col style="width:65px">
             <col style="width:115px">
+            <col style="width:175px">
             <col style="width:170px">
-            <col style="width:160px">
             <col style="width:70px">
-            <col style="width:50px">
+            <col style="width:55px">
           </colgroup>
           <thead><tr>
             <th>#</th><th>Date</th><th>Project</th><th>Type 2</th><th>POC</th>
