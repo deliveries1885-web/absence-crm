@@ -565,9 +565,9 @@ function doLogin(){
     renderAdmin();
     initMsal();
   } else {
-    // POC - connect with their own 1885 account
-    renderPoc();
-    initMsal(); // Same OneDrive connection for POCs too
+    // POC - load from public URL then init MSAL silently for saving
+    loadFromOneDrive(); // loads from public URL for POCs
+    initMsal(); // init silently for save functionality
   }
 }
 
