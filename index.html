@@ -359,41 +359,57 @@ function setLastSync(){
 
 // ── MSAL OneDrive ─────────────────────────────────────────────
 function initMsal(){
-  if(CRM_CONFIG.clientId==='PLACEHOLDER_ONLY'){
-    document.getElementById('setupBanner').style.display='block';
-    setSyncStatus('err','Not configured — saving locally');
-    return;
-  }
+  setSyncStatus('spin','Initializing...');
   try{
     const msalConfig = {
       auth:{
-        clientId: CRM_CONFIG.clientId,
+        clientId: '8a033239-ba9e-4731-908b-2d25da6975ad',
         authority: 'https://login.microsoftonline.com/896fb671-d8c3-4078-96ca-4ee5cc8fbdde',
-        redirectUri: "https://deliveries1885-web.github.io/absence-crm",
+        redirectUri: 'https://deliveries1885-web.github.io/absence-crm',
         navigateToLoginRequestUrl: false
       },
       cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:true }
     };
-    // Support both MSAL v2 and v5
-    const createApp = msal.createPublicClientApplication || ((cfg) => Promise.resolve(new msal.PublicClientApplication(cfg)));
-    Promise.resolve(createApp(msalConfig)).then(app => {
-      msalApp = app;
-      const initPromise = msalApp.initialize ? msalApp.initialize() : Promise.resolve();
-      initPromise.then(()=>{
-      const redirectPromise = msalApp.handleRedirectPromise ? msalApp.handleRedirectPromise() : Promise.resolve(null);
-      redirectPromise.then(resp=>{
-        if(resp && resp.accessToken){ accessToken=resp.accessToken; onConnected(); return; }
-        const accounts=msalApp.getAllAccounts();
-        if(accounts.length>0){
-          msalApp.acquireTokenSilent({ account:accounts[0], scopes:['Files.ReadWrite'] })
-            .then(r=>{ accessToken=r.accessToken; onConnected(); })
-            .catch(()=>setSyncStatus('','Click to connect OneDrive'));
-        } else {
-          setSyncStatus('','Click to connect OneDrive');
-        }
-      }).catch(()=>setSyncStatus('','Click to connect OneDrive'));
-    });
-  } catch(e){ setSyncStatus('err','MSAL error'); }
+    if(typeof msal === 'undefined'){
+      setSyncStatus('err','MSAL library not loaded');
+      return;
+    }
+    if(typeof msal.PublicClientApplication !== 'undefined'){
+      msalApp = new msal.PublicClientApplication(msalConfig);
+      if(msalApp.initialize){
+        msalApp.initialize().then(afterInit).catch(e=>setSyncStatus('err','Init failed: '+e.message));
+      } else {
+        afterInit();
+      }
+    } else if(typeof msal.createPublicClientApplication !== 'undefined'){
+      msal.createPublicClientApplication(msalConfig).then(app=>{
+        msalApp = app;
+        afterInit();
+      }).catch(e=>setSyncStatus('err','Init failed: '+e.message));
+    } else {
+      setSyncStatus('err','MSAL API not found');
+    }
+  } catch(e){
+    setSyncStatus('err','MSAL error: '+e.message);
+    console.error('MSAL init error:',e);
+  }
+}
+
+function afterInit(){
+  try{
+    const rp = msalApp.handleRedirectPromise ? msalApp.handleRedirectPromise() : Promise.resolve(null);
+    rp.then(resp=>{
+      if(resp && resp.accessToken){ accessToken=resp.accessToken; onConnected(); return; }
+      const accounts = msalApp.getAllAccounts();
+      if(accounts.length>0){
+        msalApp.acquireTokenSilent({ account:accounts[0], scopes:['Files.ReadWrite'] })
+          .then(r=>{ accessToken=r.accessToken; onConnected(); })
+          .catch(()=>setSyncStatus('','Click to connect OneDrive'));
+      } else {
+        setSyncStatus('','Click to connect OneDrive');
+      }
+    }).catch(()=>setSyncStatus('','Click to connect OneDrive'));
+  } catch(e){ setSyncStatus('','Click to connect OneDrive'); }
 }
 
 async function connectOneDrive(){
