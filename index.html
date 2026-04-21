@@ -621,19 +621,21 @@ function codeDD(id, val){
 }
 function subDD(id, code, val){
   const subs = code && CODE_MAP[code] ? CODE_MAP[code] : [];
-  return `<select class="dd sub-dd" id="s_${id}" style="min-width:155px" ${subs.length===0?'disabled':''}>
-    <option value="">— Subcode —</option>
-    ${subs.map(s=>`<option value="${s}"${s===val?' selected':''}>${s}</option>`).join('')}
-  </select>`;
+  return '<select class="dd sub-dd" id="s_'+id+'" style="min-width:155px;cursor:pointer">'
+    +'<option value="">— Subcode —</option>'
+    +subs.map(s=>'<option value="'+s+'"'+(s===val?' selected':'')+'>'+s+'</option>').join('')
+    +'</select>';
 }
 function onCodeChange(id){
   const code=document.getElementById('c_'+id).value;
   const subs=code&&CODE_MAP[code]?CODE_MAP[code]:[];
   const el=document.getElementById('s_'+id);
-  if(!el) return;
-  el.innerHTML=`<option value="">— Subcode —</option>${subs.map(s=>`<option value="${s}">${s}</option>`).join('')}`;
-  el.disabled=subs.length===0;
-  el.style.opacity=subs.length===0?'0.4':'1';
+  if(!el){ console.log('subcode el not found for',id); return; }
+  el.innerHTML='<option value="">— Subcode —</option>'+subs.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+  el.disabled=false;
+  el.style.opacity='1';
+  el.style.pointerEvents='auto';
+  el.style.cursor='pointer';
   if(subs.length===1){ el.value=subs[0]; }
 }
 
