@@ -304,10 +304,10 @@ async function loadFromOneDrive(){
     localSave();setLastSync();
   }catch(e){riders=JSON.parse(localStorage.getItem('crm_final')||'[]');}
 }
-function doLogin(){const name=document.getElementById('loginName').value.trim();const role=document.getElementById('loginRole').value;const pin=document.getElementById('adminPin').value;if(!name){alert('Enter your name.');return;}if(role==='admin'&&pin!==CRM_CONFIG.adminPin){alert('Wrong PIN.');return;}currentUser=name;currentRole=role;document.getElementById('loginOuter').style.display='none';document.getElementById('mainApp').style.display='block';const pill=document.getElementById('topPill');if(role==='admin'){pill.textContent='Admin';pill.className='pill blue';document.getElementById('exportBtn').style.display='inline-block';document.getElementById('refreshGhBtn').style.display='inline-block';document.getElementById('adminView').style.display='block';}else{pill.textContent=name;pill.className='pill green';document.getElementById('pocView').style.display='block';}riders=JSON.parse(localStorage.getItem('crm_final')||'[]');if(role==='admin'){
+function doLogin(){const name=document.getElementById('loginName').value.trim();const role=document.getElementById('loginRole').value;const pin=document.getElementById('adminPin').value;if(!name){alert('Enter your name.');return;}if(role==='admin'&&pin!==CRM_CONFIG.adminPin){alert('Wrong PIN.');return;}currentUser=name;currentRole=role;document.getElementById('loginOuter').style.display='none';document.getElementById('mainApp').style.display='block';const pill=document.getElementById('topPill');if(role==='admin'){pill.textContent='Admin';pill.className='pill blue';document.getElementById('exportBtn').style.display='inline-block';document.getElementById('refreshGhBtn').style.display='inline-block';document.getElementById('adminView').style.display='block';}else{pill.textContent=name;pill.className='pill green';document.getElementById('pocView').style.display='block';}riders=[];if(role==='admin'){
     renderAdmin();
     setSyncStatus('spin','Loading from GitHub...');
-    loadFromGitHub().then(ok=>{if(ok){setSyncStatus('ok','Loaded');setLastSync();renderAdmin();}else{setSyncStatus('err','Load failed');}});
+    loadFromGitHub().then(ok=>{if(ok){setSyncStatus('ok','Loaded from GitHub');setLastSync();renderAdmin();}else{riders=JSON.parse(localStorage.getItem('crm_final')||'[]');setSyncStatus('err','GitHub load failed - using local data');renderAdmin();}});
     initMsal();
     // Auto-pull POC updates every 90 seconds
     setInterval(async()=>{
