@@ -253,15 +253,19 @@ async function loadFromOneDrive(){
     const text=await r.text();
     const oneDriveData=text?JSON.parse(text):[];
     
-    // Also get latest from KV (has POC updates)
+    // Also get latest from KV (has POC updates) - merge by passport
     try{
       const kvR=await fetch(KV_API+'/api/riders?t='+Date.now());
       if(kvR.ok){
         const kvData=await kvR.json();
         if(Array.isArray(kvData)&&kvData.length>0){
           const kvMap={};
-          kvData.forEach(r=>{kvMap[r._id]=r;});
-          riders=oneDriveData.map(r=>kvMap[r._id]?{...r,...kvMap[r._id]}:r);
+          kvData.forEach(r=>{if(r.passport)kvMap[r.passport.trim()]=r;});
+          riders=oneDriveData.map(r=>{
+            const match=r.passport&&kvMap[r.passport.trim()];
+            if(match&&match.code)return{...r,code:match.code,subcode:match.subcode,remarks:match.remarks,updatedBy:match.updatedBy,updatedAt:match.updatedAt,status:match.status};
+            return r;
+          });
         } else { riders=oneDriveData; }
       } else { riders=oneDriveData; }
     } catch(e){ riders=oneDriveData; }
@@ -282,11 +286,16 @@ function doLogin(){const name=document.getElementById('loginName').value.trim();
           if(r.ok){
             const kvData=await r.json();
             if(Array.isArray(kvData)&&kvData.length>0){
+              // Build map by passport (works even if _id differs)
               const kvMap={};
-              kvData.forEach(r=>{kvMap[r._id]=r;});
+              kvData.forEach(r=>{if(r.passport)kvMap[r.passport.trim()]=r;});
               let changed=false;
               riders=riders.map(r=>{
-                if(kvMap[r._id]&&(kvMap[r._id].code!==r.code||kvMap[r._id].remarks!==r.remarks)){changed=true;return{...r,...kvMap[r._id]};}
+                const match=r.passport&&kvMap[r.passport.trim()];
+                if(match&&(match.code!==r.code||match.remarks!==r.remarks)){
+                  changed=true;
+                  return{...r,code:match.code,subcode:match.subcode,remarks:match.remarks,updatedBy:match.updatedBy,updatedAt:match.updatedAt,status:match.status};
+                }
                 return r;
               });
               if(changed){localSave();renderAdmin();toast('POC updates received!');}
@@ -353,12 +362,21 @@ async function refreshFromGitHub(){
     if(r.ok){
       const kvData=await r.json();
       if(Array.isArray(kvData)&&kvData.length>0){
+        // Merge by passport number (works even if _id differs)
         const kvMap={};
-        kvData.forEach(r=>{kvMap[r._id]=r;});
-        riders=riders.map(r=>kvMap[r._id]?{...r,...kvMap[r._id]}:r);
+        kvData.forEach(r=>{if(r.passport)kvMap[r.passport.trim()]=r;});
+        let updated=0;
+        riders=riders.map(r=>{
+          const match=r.passport&&kvMap[r.passport.trim()];
+          if(match&&match.code){
+            updated++;
+            return{...r,code:match.code,subcode:match.subcode,remarks:match.remarks,updatedBy:match.updatedBy,updatedAt:match.updatedAt,status:match.status};
+          }
+          return r;
+        });
         localSave();
         setSyncStatus('ok','POC updates pulled!');
-        toast('POC updates loaded!');
+        toast(updated+' riders updated from POCs!');
         renderAdmin();
         return;
       }
