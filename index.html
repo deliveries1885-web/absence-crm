@@ -356,14 +356,17 @@ function loadCSV(e){const file=e.target.files[0];if(!file)return;const reader=ne
 const newRiders=[];
 lines.slice(1).forEach(line=>{if(!line.trim())return;const cols=line.split(',');newRiders.push({_id:uid(),date:gv(cols,ci.date)||new Date().toISOString().slice(0,10),projtype:gv(cols,ci.projtype),type:gv(cols,ci.type),poc:gv(cols,ci.poc)||gv(cols,0),ridername:gv(cols,ci.ridername),passport:gv(cols,ci.passport),riderid:gv(cols,ci.riderid),mob:gv(cols,ci.mob),client:gv(cols,ci.client),code:'',subcode:'',remarks:'',updatedBy:'',updatedAt:'',status:'pending'});});
 setSyncStatus('spin','Loading...');
-// Fetch existing KV data first - preserve any done/updated riders
-let kvDoneMap={};
+// Build done map from BOTH local riders AND KV - whichever has done data
+let doneMap={};
+// First check local riders (most reliable - has current session data)
+riders.forEach(r=>{if(r.passport&&r.status==='done')doneMap[r.passport.trim()]=r;});
+// Then check KV (fills in any gaps)
 try{
   const kvR=await fetch(KV_API+'/api/riders?t='+Date.now());
-  if(kvR.ok){const kvData=await kvR.json();if(Array.isArray(kvData)){kvData.forEach(r=>{if(r.passport&&r.status==='done')kvDoneMap[r.passport.trim()]=r;});}}
+  if(kvR.ok){const kvData=await kvR.json();if(Array.isArray(kvData)){kvData.forEach(r=>{if(r.passport&&r.status==='done'&&!doneMap[r.passport.trim()])doneMap[r.passport.trim()]=r;});}}
 }catch(e){console.log('KV fetch skipped:',e);}
-// Merge: for each new CSV rider, keep POC updates if already done
-const merged=newRiders.map(r=>{const done=r.passport&&kvDoneMap[r.passport.trim()];if(done)return{...r,code:done.code,subcode:done.subcode,remarks:done.remarks,updatedBy:done.updatedBy,updatedAt:done.updatedAt,status:done.status};return r;});
+// Merge: preserve any done rider from local or KV
+const merged=newRiders.map(r=>{const done=r.passport&&doneMap[r.passport.trim()];if(done)return{...r,code:done.code,subcode:done.subcode,remarks:done.remarks,updatedBy:done.updatedBy,updatedAt:done.updatedAt,status:done.status};return r;});
 riders=merged;
 const preserved=Object.keys(kvDoneMap).length;
 localSave();
